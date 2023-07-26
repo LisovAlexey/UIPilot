@@ -97,6 +97,15 @@ public struct UIPilotHost<T: Equatable, Screen: View>: View {
     }
 }
 
+
+final class HostingController<Content: View>: UIHostingController<Content> {
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        
+        view.setNeedsUpdateConstraints()
+    }
+}
+
 struct NavigationControllerHost<T: Equatable, Screen: View>: UIViewControllerRepresentable {
     
     let navTitle: String
@@ -119,13 +128,13 @@ struct NavigationControllerHost<T: Equatable, Screen: View>: UIViewControllerRep
         
         for path in uipilot.routes {
             navigation.pushViewController(
-                UIHostingController(rootView: routeMap(path)), animated: true
+                HostingController(rootView: routeMap(path)), animated: true
             )
         }
         
         uipilot.onPush = { route in
             navigation.pushViewController(
-                UIHostingController(rootView: routeMap(route)), animated: true
+                HostingController(rootView: routeMap(route)), animated: true
             )
         }
         
